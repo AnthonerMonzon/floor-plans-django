@@ -15,6 +15,7 @@ urlpatterns = [
     path("projects/<uuid:project_id>/floorplans/<uuid:floorplan_id>/edit/", views.floorplan_editor_view, name="floorplan_editor"),
     path("projects/<uuid:project_id>/floorplans/<uuid:floorplan_id>/save-crop/", views.floorplan_save_crop_view, name="floorplan_save_crop"),
     path("projects/<uuid:project_id>/floorplans/<uuid:floorplan_id>/delete/", views.floorplan_delete_view, name="floorplan_delete"),
+    path("projects/<uuid:project_id>/floorplans/<uuid:floorplan_id>/annotate/", views.floorplan_annotate_view, name="floorplan_annotate"),
     path("users/", views.user_list_view, name="user_list"),
     path("users/new/", views.user_create_view, name="user_create"),
     path("users/<int:user_id>/edit/", views.user_edit_view, name="user_edit"),

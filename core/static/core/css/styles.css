@@ -665,3 +665,127 @@ body {
     margin-top: 20px;
     justify-content: flex-end;
 }
+
+/* ── Annotate button ─────────────────────────────────── */
+.btn-annotate {
+    background-color: #7b1fa2;
+    color: #fff;
+}
+
+.btn-annotate:hover {
+    background-color: #6a1b9a;
+}
+
+.main-content:has(.annotate-page) {
+    padding: 0;
+    overflow: hidden;
+}
+
+/* \u2500\u2500 Annotate page \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+.annotate-page {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 56px - 24px);
+    min-height: 520px;
+    background: #12121c;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.annotate-canvas-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #0d0d18;
+    min-height: 420px;
+    height: 100%;
+}
+
+/* ── Tool button success / danger variants ───────────── */
+.tool-btn-success {
+    background: #2e7d32;
+    color: #fff;
+    border-color: #1b5e20;
+}
+
+.tool-btn-success:hover {
+    background: #1b5e20;
+    color: #fff;
+}
+
+.tool-btn-danger {
+    background: #b71c1c;
+    color: #fff;
+    border-color: #7f0000;
+}
+
+.tool-btn-danger:hover {
+    background: #7f0000;
+    color: #fff;
+}
+
+.tool-btn-auto {
+    background: #f57c00;
+    color: #fff;
+    border-color: #e65100;
+}
+
+.tool-btn-auto:hover {
+    background: #e65100;
+    color: #fff;
+}
+
+.tool-btn-auto:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── Toolbar label ───────────────────────────────────── */
+.tool-label {
+    font-size: 11px;
+    color: #8888aa;
+    margin-right: 4px;
+}
+
+/* ── Color picker inline ─────────────────────────────── */
+#color-pick {
+    width: 32px;
+    height: 28px;
+    padding: 1px 2px;
+    border: 1px solid #3a3a5c;
+    border-radius: 4px;
+    background: #1e1e2e;
+    cursor: pointer;
+}
+
+#stroke-width {
+    background: #1e1e2e;
+    color: #c0c0d8;
+    border: 1px solid #3a3a5c;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 12px;
+}
+
+/* ── Text input overlay ──────────────────────────────── */
+.text-input-wrap {
+    position: fixed;
+    z-index: 9999;
+    background: #fff;
+    border: 2px solid #1976d2;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.text-input-wrap.hidden {
+    display: none;
+}
+
+.text-input-wrap input {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 4px 8px;
+    width: 200px;
+    background: transparent;
+}

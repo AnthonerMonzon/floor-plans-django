@@ -178,6 +178,27 @@ def floorplan_delete_view(request, project_id, floorplan_id):
 
 
 @login_required
+def floorplan_annotate_view(request, project_id, floorplan_id):
+    project = get_object_or_404(Project, id=project_id)
+    floorplan = get_object_or_404(FloorPlan, id=floorplan_id, project=project)
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body)
+            shapes = body.get("shapes", [])
+            existing = floorplan.annotate or {}
+            existing["shapes"] = shapes
+            floorplan.annotate = existing
+            floorplan.save(update_fields=["annotate", "updated_at"])
+            return JsonResponse({"ok": True})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return render(request, "core/floorplan_annotate.html", {
+        "project": project,
+        "floorplan": floorplan,
+    })
+
+
+@login_required
 def user_list_view(request):
     users = User.objects.select_related("profile").all()
     paginator = Paginator(users, 20)

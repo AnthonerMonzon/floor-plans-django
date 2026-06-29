@@ -53,6 +53,7 @@
                 <td>
                     <a href="{% url 'floorplan_viewer' project.id fp.id %}" class="btn btn-sm">View</a>
                     <a href="{% url 'floorplan_editor' project.id fp.id %}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{% url 'floorplan_annotate' project.id fp.id %}" class="btn btn-sm btn-annotate">Annotate</a>
                     <form method="post" action="{% url 'floorplan_delete' project.id fp.id %}" class="inline-form" onsubmit="return confirm('Delete this floor plan?');">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
