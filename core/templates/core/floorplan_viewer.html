@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ floorplan.file_name }} - Floor Plan Compliance{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Floor Plan Viewer</h2>
+    <div style="display:flex;gap:8px;">
+        <a href="{% url 'floorplan_editor' project.id floorplan.id %}" class="btn btn-primary">Edit / Crop</a>
+        <a href="{% url 'project_detail' project.id %}?tab=floorplans" class="btn">Back</a>
+    </div>
+</div>
+<div class="card">
+    <p><strong>Project:</strong> {{ project.project_name }}</p>
+    <p><strong>File:</strong> {{ floorplan.file_name }}</p>
+    <p><strong>Version:</strong> v{{ floorplan.version_no }}</p>
+    <p><strong>Status:</strong> {{ floorplan.get_status_display }}</p>
+    {% if floorplan.annotate.notes %}
+    <p><strong>Notes:</strong> {{ floorplan.annotate.notes }}</p>
+    {% endif %}
+    {% if floorplan.supabase_url %}
+    <p><strong>Supabase Storage:</strong> <a href="{{ floorplan.supabase_url }}" target="_blank" rel="noopener">View in Supabase ↗</a></p>
+    {% endif %}
+</div>
+<div class="viewer-container">
+    {% if floorplan.converted_file %}
+    <img src="{{ floorplan.converted_file.url }}" alt="{{ floorplan.file_name }}" class="image-viewer">
+    <div class="viewer-actions">
+        <a href="{{ floorplan.file.url }}" class="btn" download>Download original ({{ floorplan.file_name }})</a>
+    </div>
+    {% elif floorplan.file.url|lower|slice:"-4:" == '.dxf' or floorplan.file.url|lower|slice:"-4:" == '.dwg' %}
+    <p class="notice">DXF/DWG preview is not available in the Django template version. Download the file to view it in a CAD viewer.</p>
+    <a href="{{ floorplan.file.url }}" class="btn btn-primary" download>Download {{ floorplan.file_name }}</a>
+    {% else %}
+    <img src="{{ floorplan.file.url }}" alt="{{ floorplan.file_name }}" class="image-viewer">
+    {% endif %}
+</div>
+{% endblock %}

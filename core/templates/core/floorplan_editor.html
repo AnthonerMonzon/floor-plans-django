@@ -1,0 +1,288 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Edit – {{ floorplan.file_name }}{% endblock %}
+
+{% block content %}
+<div class="editor-header">
+    <div class="editor-header-left">
+        <a href="{% url 'project_detail' project.id %}?tab=floorplans" class="btn">← Back</a>
+        <span class="editor-title">{{ floorplan.file_name }}</span>
+        <span class="editor-badge">v{{ floorplan.version_no }}</span>
+    </div>
+    <div class="editor-header-right">
+        <button id="btn-save" class="btn btn-primary">💾 Save</button>
+        <button id="btn-save-as" class="btn btn-secondary">📋 Save As…</button>
+        <a href="{% url 'floorplan_viewer' project.id floorplan.id %}" class="btn">View</a>
+    </div>
+</div>
+
+<div class="editor-shell">
+    <!-- Toolbar -->
+    <div class="editor-toolbar">
+        <div class="toolbar-group">
+            <button class="tool-btn active" id="btn-crop" title="Crop mode">
+                <svg viewBox="0 0 24 24"><path d="M17 15h2V7a2 2 0 0 0-2-2H9v2h8zM7 17V1H5v4H1v2h4v10a2 2 0 0 0 2 2h10v4h2v-4h4v-2z"/></svg>
+                Crop
+            </button>
+            <button class="tool-btn" id="btn-move" title="Move mode">
+                <svg viewBox="0 0 24 24"><path d="M13 6v5h5V6h3L12 0 3 6h3v5h5V6zM3 18h3v-5H1l9 6 9-6h-5v5h-3V18z" transform="rotate(90,12,12)"/></svg>
+                Move
+            </button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+            <button class="tool-btn" id="btn-zoom-in" title="Zoom in">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm.5-7H9v2H7v1h2v2h1v-2h2V9h-2z"/></svg>
+            </button>
+            <button class="tool-btn" id="btn-zoom-out" title="Zoom out">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM7 9h5v1H7z"/></svg>
+            </button>
+            <button class="tool-btn" id="btn-zoom-reset" title="Fit to screen">
+                <svg viewBox="0 0 24 24"><path d="M15 3l2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3zm6 12l-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6zm12-6l-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6z"/></svg>
+            </button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+            <button class="tool-btn" id="btn-rotate-ccw" title="Rotate left 90°">
+                <svg viewBox="0 0 24 24"><path d="M7.11 8.53L5.7 7.11C4.8 8.27 4.24 9.61 4.07 11h2.02c.14-.87.49-1.72 1.02-2.47zM6.09 13H4.07c.17 1.39.72 2.73 1.62 3.89l1.41-1.42c-.52-.75-.87-1.59-1.01-2.47zm1.01 5.32c1.16.9 2.51 1.44 3.9 1.61V17.9c-.87-.15-1.71-.49-2.46-1.03L7.1 18.32zM13 4.07V1L8.45 5.55 13 10V6.09c2.84.48 5 2.94 5 5.91s-2.16 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93s-3.05-7.44-7-7.93z"/></svg>
+            </button>
+            <button class="tool-btn" id="btn-rotate-cw" title="Rotate right 90°">
+                <svg viewBox="0 0 24 24"><path d="M15.55 5.55L11 1v3.07C7.06 4.56 4 7.92 4 12s3.05 7.44 7 7.93v-2.02c-2.84-.48-5-2.94-5-5.91s2.16-5.43 5-5.91V10l4.55-4.45zM19.93 11c-.17-1.39-.72-2.73-1.62-3.89l-1.42 1.42c.54.75.88 1.6 1.02 2.47h2.02zM13 17.9v2.02c1.39-.17 2.74-.71 3.9-1.61l-1.44-1.44c-.75.54-1.59.89-2.46 1.03zm3.89-2.42l1.42 1.41c.9-1.16 1.45-2.5 1.62-3.89h-2.02c-.14.87-.48 1.72-1.02 2.48z"/></svg>
+            </button>
+            <button class="tool-btn" id="btn-flip-h" title="Flip horizontal">
+                <svg viewBox="0 0 24 24"><path d="M15 21h2v-2h-2v2zm4-12h2V7h-2v2zM3 5v14c0 1.1.9 2 2 2h4v-2H5V5h4V3H5c-1.1 0-2 .9-2 2zm16-2v2h2c0-1.1-.9-2-2-2zm-8 20h2V1h-2v22zm8-6h2v-2h-2v2zM15 5h2V3h-2v2zm4 8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2z"/></svg>
+            </button>
+            <button class="tool-btn" id="btn-flip-v" title="Flip vertical">
+                <svg viewBox="0 0 24 24" style="transform:rotate(90deg)"><path d="M15 21h2v-2h-2v2zm4-12h2V7h-2v2zM3 5v14c0 1.1.9 2 2 2h4v-2H5V5h4V3H5c-1.1 0-2 .9-2 2zm16-2v2h2c0-1.1-.9-2-2-2zm-8 20h2V1h-2v22zm8-6h2v-2h-2v2zM15 5h2V3h-2v2zm4 8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2z"/></svg>
+            </button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+            <button class="tool-btn" id="btn-aspect-free" title="Free crop">Free</button>
+            <button class="tool-btn" id="btn-aspect-1-1" title="Square 1:1">1:1</button>
+            <button class="tool-btn" id="btn-aspect-4-3" title="4:3">4:3</button>
+            <button class="tool-btn" id="btn-aspect-16-9" title="16:9">16:9</button>
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="toolbar-group">
+            <button class="tool-btn" id="btn-reset" title="Reset all changes">Reset</button>
+        </div>
+    </div>
+
+    <!-- Canvas -->
+    <div class="editor-canvas-wrap">
+        {% if floorplan.converted_file %}
+        <img id="editor-img" src="{{ floorplan.converted_file.url }}" alt="{{ floorplan.file_name }}">
+        {% else %}
+        <p style="color:#ccc;padding:40px;">No preview available — conversion may have failed.</p>
+        {% endif %}
+    </div>
+
+    <!-- Status bar -->
+    <div class="editor-status">
+        <span id="editor-status-msg">Select an area to crop, then click <strong>Save crop</strong>.</span>
+        <span id="editor-crop-info"></span>
+    </div>
+</div>
+
+<!-- Save confirmation toast -->
+<div id="save-toast" class="save-toast hidden"></div>
+
+<!-- Save As modal -->
+<div id="saveas-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h3 class="modal-title">Save As New Version</h3>
+        <p class="modal-desc">The cropped image will be saved as a new floor plan version in this project.</p>
+        <div class="form-field">
+            <label for="saveas-name">File name</label>
+            <input type="text" id="saveas-name" placeholder="e.g. Ground Floor – cropped" autocomplete="off">
+        </div>
+        <div class="modal-actions">
+            <button id="saveas-confirm" class="btn btn-primary">Save As</button>
+            <button id="saveas-cancel" class="btn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Cropper.js CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+
+<script>
+(function () {
+    const img = document.getElementById('editor-img');
+    if (!img) return;
+
+    const SAVE_URL = "{% url 'floorplan_save_crop' project.id floorplan.id %}";
+    const CSRF = "{{ csrf_token }}";
+    const CURRENT_NAME = "{{ floorplan.file_name|escapejs }}";
+    const CURRENT_VERSION = {{ floorplan.version_no }};
+
+    let cropper = null;
+
+    function initCropper() {
+        if (cropper) { cropper.destroy(); }
+        cropper = new Cropper(img, {
+            viewMode: 2,
+            dragMode: 'crop',
+            autoCropArea: 1,
+            responsive: true,
+            restore: false,
+            background: true,
+            movable: true,
+            rotatable: true,
+            scalable: true,
+            zoomable: true,
+            zoomOnWheel: true,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            toggleDragModeOnDblclick: true,
+            ready() {
+                updateCropInfo();
+            },
+            crop() {
+                updateCropInfo();
+            },
+        });
+    }
+
+    function updateCropInfo() {
+        if (!cropper) return;
+        const d = cropper.getData(true);
+        document.getElementById('editor-crop-info').textContent =
+            `Crop: ${d.width} × ${d.height} px  |  x:${d.x} y:${d.y}`;
+    }
+
+    initCropper();
+
+    // Mode buttons
+    document.getElementById('btn-crop').addEventListener('click', function () {
+        setActive(this);
+        cropper.setDragMode('crop');
+    });
+    document.getElementById('btn-move').addEventListener('click', function () {
+        setActive(this);
+        cropper.setDragMode('move');
+    });
+
+    // Zoom
+    document.getElementById('btn-zoom-in').addEventListener('click', () => cropper.zoom(0.1));
+    document.getElementById('btn-zoom-out').addEventListener('click', () => cropper.zoom(-0.1));
+    document.getElementById('btn-zoom-reset').addEventListener('click', () => { cropper.reset(); updateCropInfo(); });
+
+    // Rotate
+    document.getElementById('btn-rotate-ccw').addEventListener('click', () => cropper.rotate(-90));
+    document.getElementById('btn-rotate-cw').addEventListener('click', () => cropper.rotate(90));
+
+    // Flip
+    document.getElementById('btn-flip-h').addEventListener('click', () => {
+        const d = cropper.getData(); cropper.scaleX(-d.scaleX || -1);
+    });
+    document.getElementById('btn-flip-v').addEventListener('click', () => {
+        const d = cropper.getData(); cropper.scaleY(-d.scaleY || -1);
+    });
+
+    // Aspect ratios
+    document.getElementById('btn-aspect-free').addEventListener('click', function () {
+        setAspect(this); cropper.setAspectRatio(NaN);
+    });
+    document.getElementById('btn-aspect-1-1').addEventListener('click', function () {
+        setAspect(this); cropper.setAspectRatio(1);
+    });
+    document.getElementById('btn-aspect-4-3').addEventListener('click', function () {
+        setAspect(this); cropper.setAspectRatio(4 / 3);
+    });
+    document.getElementById('btn-aspect-16-9').addEventListener('click', function () {
+        setAspect(this); cropper.setAspectRatio(16 / 9);
+    });
+
+    // Reset
+    document.getElementById('btn-reset').addEventListener('click', () => { cropper.reset(); updateCropInfo(); });
+
+    // ── Save (overwrite current) ──────────────────────────
+    document.getElementById('btn-save').addEventListener('click', async function () {
+        await doSave(this, { save_as: false });
+    });
+
+    // ── Save As (new version) ─────────────────────────────
+    const saveAsBtn    = document.getElementById('btn-save-as');
+    const modal        = document.getElementById('saveas-modal');
+    const nameInput    = document.getElementById('saveas-name');
+    const confirmBtn   = document.getElementById('saveas-confirm');
+    const cancelBtn    = document.getElementById('saveas-cancel');
+
+    saveAsBtn.addEventListener('click', () => {
+        nameInput.value = CURRENT_NAME;
+        modal.classList.remove('hidden');
+        nameInput.focus();
+        nameInput.select();
+    });
+    cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.add('hidden'); });
+
+    confirmBtn.addEventListener('click', async function () {
+        const name = nameInput.value.trim() || CURRENT_NAME;
+        modal.classList.add('hidden');
+        await doSave(saveAsBtn, { save_as: true, file_name: name });
+    });
+
+    // ── Shared save function ──────────────────────────────
+    async function doSave(triggerBtn, extra) {
+        triggerBtn.disabled = true;
+        const origText = triggerBtn.textContent;
+        triggerBtn.textContent = 'Saving…';
+        setStatus('Generating image…');
+        try {
+            const canvas = cropper.getCroppedCanvas({ maxWidth: 4096, maxHeight: 4096, imageSmoothingQuality: 'high' });
+            const dataUrl = canvas.toDataURL('image/png');
+            setStatus('Uploading…');
+            const resp = await fetch(SAVE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+                body: JSON.stringify({ image: dataUrl, ...extra }),
+            });
+            const json = await resp.json();
+            if (json.ok) {
+                if (json.redirect) {
+                    showToast(`✓ Saved as "${json.file_name}" (v${json.version}) — redirecting…`);
+                    setTimeout(() => { window.location.href = json.redirect; }, 1200);
+                } else {
+                    showToast('✓ Saved successfully');
+                    setStatus('Saved. Reloading preview…');
+                    setTimeout(() => {
+                        img.src = json.url + '?t=' + Date.now();
+                        cropper.destroy();
+                        img.onload = () => { initCropper(); setStatus('Ready.'); };
+                    }, 800);
+                }
+            } else {
+                setStatus('Error: ' + (json.error || 'Unknown error'));
+            }
+        } catch (e) {
+            setStatus('Error: ' + e.message);
+        } finally {
+            triggerBtn.disabled = false;
+            triggerBtn.textContent = origText;
+        }
+    }
+
+    function setActive(btn) {
+        document.querySelectorAll('.toolbar-group .tool-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+    function setAspect(btn) {
+        document.querySelectorAll('#btn-aspect-free,#btn-aspect-1-1,#btn-aspect-4-3,#btn-aspect-16-9')
+            .forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+    function setStatus(msg) {
+        document.getElementById('editor-status-msg').innerHTML = msg;
+    }
+    function showToast() {
+        const t = document.getElementById('save-toast');
+        t.classList.remove('hidden');
+        setTimeout(() => t.classList.add('hidden'), 3000);
+    }
+})();
+</script>
+{% endblock %}

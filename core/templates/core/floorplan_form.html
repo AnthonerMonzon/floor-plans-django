@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Upload Floor Plan - Floor Plan Compliance{% endblock %}
+
+{% block content %}
+<h2 class="page-title">Upload Floor Plan</h2>
+<h3>{{ project.project_name }}</h3>
+<div class="form-card">
+    <form method="post" enctype="multipart/form-data" class="stack-form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div class="field-errors">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Upload</button>
+            <a href="{% url 'project_detail' project.id %}?tab=floorplans" class="btn">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Users - Floor Plan Compliance{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Users</h2>
+    <a href="{% url 'user_create' %}" class="btn btn-primary">New User</a>
+</div>
+<div class="table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in page_obj %}
+            <tr>
+                <td>{{ u.profile }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.profile.role }}</td>
+                <td><a href="{% url 'user_edit' u.id %}" class="btn btn-sm">Edit</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty-cell">No users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm">Previous</a>
+    {% endif %}
+    <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm">Next</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

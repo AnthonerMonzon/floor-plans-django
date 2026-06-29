@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Floor Plan Compliance{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <div class="app-shell">
+        <header class="app-bar">
+            <div class="app-bar-left">
+                <button class="menu-btn" type="button">☰</button>
+                <span class="app-title">Floor Plan Compliance</span>
+            </div>
+            <div class="app-bar-right">
+                <span class="user-name">{{ user.profile }}</span>
+                <span class="user-role">{{ user.profile.role }}</span>
+                <form action="{% url 'logout' %}" method="post" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </header>
+        <div class="app-body">
+            <aside class="drawer">
+                <nav class="nav-menu">
+                    <a class="nav-link{% if request.path == '/' %} active{% endif %}" href="{% url 'dashboard' %}">Dashboard</a>
+                    <a class="nav-link{% if '/projects' in request.path %} active{% endif %}" href="{% url 'project_list' %}">Projects</a>
+                    <a class="nav-link{% if '/users' in request.path %} active{% endif %}" href="{% url 'user_list' %}">Users</a>
+                </nav>
+            </aside>
+            <main class="main-content">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    {% else %}
+    <main class="guest-main">
+        {% block guest_content %}{% endblock %}
+    </main>
+    {% endif %}
+</body>
+</html>

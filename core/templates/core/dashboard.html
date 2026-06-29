@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard - Floor Plan Compliance{% endblock %}
+
+{% block content %}
+<h2 class="page-title">Dashboard</h2>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ project_count }}</div>
+        <div class="stat-label">Projects</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ floorplan_count }}</div>
+        <div class="stat-label">Floor Plans</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ user_count }}</div>
+        <div class="stat-label">Users</div>
+    </div>
+</div>
+{% endblock %}
