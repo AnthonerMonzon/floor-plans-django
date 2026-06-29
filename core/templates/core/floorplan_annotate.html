@@ -76,6 +76,10 @@
       <button class="tool-btn" id="btn-delete-sel" title="Delete selected shape">🗑 Delete</button>
     </div>
     <div class="toolbar-divider"></div>
+    <div class="toolbar-group">
+      <button class="tool-btn tool-btn-active" id="btn-toggle-annotations" title="Show / Hide annotations (H)">👁 Hide</button>
+    </div>
+    <div class="toolbar-divider"></div>
     <div class="toolbar-group" title="Zoom (or Ctrl+Wheel)">
       <button class="tool-btn" id="btn-zoom-out" title="Zoom Out">−</button>
       <span id="zoom-label" style="min-width:38px;text-align:center;font-size:12px;color:#c0c0d8;">100%</span>
@@ -140,6 +144,7 @@
   let shapes    = [];          // committed shapes
   let undoStack = [];
   let redoStack = [];
+  let showAnnotations = true;   // toggle visibility
 
   let drawing   = false;
   let current   = null;        // shape being drawn
@@ -242,8 +247,10 @@
     ctx.translate(panX, panY);
     ctx.scale(zoom, zoom);
     if (imgLoaded) ctx.drawImage(img, 0, 0);
-    shapes.forEach((s, i) => drawShape(s, i === selected));
-    if (current) drawShape(current, false);
+    if (showAnnotations) {
+      shapes.forEach((s, i) => drawShape(s, i === selected));
+      if (current) drawShape(current, false);
+    }
     ctx.restore();
     // Hint text in canvas pixels (not transformed)
     ctx.save();
@@ -535,9 +542,20 @@
     }
     if (e.ctrlKey && e.key === "z") document.getElementById("btn-undo").click();
     if (e.ctrlKey && e.key === "y") document.getElementById("btn-redo").click();
+    if (e.key === "h" || e.key === "H") document.getElementById("btn-toggle-annotations").click();
     if (e.ctrlKey && (e.key === "+" || e.key === "=")) { e.preventDefault(); applyZoom(1.25, canvas.width/2, canvas.height/2); }
     if (e.ctrlKey &&  e.key === "-")                   { e.preventDefault(); applyZoom(0.8,  canvas.width/2, canvas.height/2); }
     if (e.ctrlKey &&  e.key === "0")                   { e.preventDefault(); fitToScreen(); }
+  });
+
+  /* ── Show / Hide annotations ────────────────────────── */
+  document.getElementById("btn-toggle-annotations").addEventListener("click", () => {
+    showAnnotations = !showAnnotations;
+    const btn = document.getElementById("btn-toggle-annotations");
+    btn.textContent = showAnnotations ? "👁 Hide" : "🚫 Show";
+    btn.classList.toggle("tool-btn-active", showAnnotations);
+    btn.classList.toggle("tool-btn-muted",  !showAnnotations);
+    redraw();
   });
 
   /* ── Clear ───────────────────────────────────────────── */

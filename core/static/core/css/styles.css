@@ -740,6 +740,27 @@ body {
     cursor: not-allowed;
 }
 
+.tool-btn-active {
+    background: #1565c0;
+    color: #fff;
+    border-color: #0d47a1;
+}
+
+.tool-btn-active:hover {
+    background: #0d47a1;
+}
+
+.tool-btn-muted {
+    background: #37474f;
+    color: #90a4ae;
+    border-color: #546e7a;
+}
+
+.tool-btn-muted:hover {
+    background: #455a64;
+    color: #cfd8dc;
+}
+
 /* ── Toolbar label ───────────────────────────────────── */
 .tool-label {
     font-size: 11px;
